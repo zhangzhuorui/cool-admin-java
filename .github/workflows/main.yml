@@ -38,7 +38,14 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-
+          
+      # 清理 Docker 镜像
+      - name: Cleanup Docker Images
+        if: always() # 无论构建成功还是失败都执行
+        run: |
+          docker system prune -f
+          # 只保留最近的一个镜像，删除其他的
+          docker image prune -a -f --filter "until=24h"
       # 4. 触发 AWS CodeDeploy 部署
       - name: Trigger CodeDeploy
         run: |

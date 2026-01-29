@@ -1,5 +1,5 @@
 # 建议指定具体版本，避免 latest 镜像过大（GraalVM 镜像通常很大，t2.micro 磁盘易满）
-FROM ghcr.io/graalvm/jdk:ol7-java17 
+FROM eclipse-temurin:17-jre-alpine
 
 # 设置工作目录
 WORKDIR /app
