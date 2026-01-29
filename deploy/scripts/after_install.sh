@@ -22,4 +22,4 @@ docker pull $ECR_URL/$REPO_NAME:$IMAGE_TAG
 echo "FULL_IMAGE=$ECR_URL/$REPO_NAME:$IMAGE_TAG" > /opt/app/java_env.file
 
 # [针对免费套餐的建议] 删除旧的无用镜像，释放 t2.micro 的磁盘空间
-docker image prune -af  
+docker image prune -af
