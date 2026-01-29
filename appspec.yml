@@ -1,0 +1,15 @@
+version: 0.0
+os: linux
+files:
+  - source: /deploy/scripts
+    destination: /opt/app/scripts/java
+hooks:
+  ApplicationStop:
+    - location: deploy/scripts/stop.sh
+      timeout: 60
+  AfterInstall:
+    - location: deploy/scripts/after_install.sh
+      timeout: 180
+  ApplicationStart:
+    - location: deploy/scripts/start.sh
+      timeout: 180
