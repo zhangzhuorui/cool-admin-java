@@ -1,0 +1,49 @@
+name: Java Backend CI/CD
+
+on:
+  push:
+    branches: [ main ] # 当 main 分支有变动时触发
+
+env:
+  AWS_REGION: us-east-2                   # 确认你的区域
+  ECR_REPOSITORY: cool-admin-java          # 确认你的 ECR 仓库名
+  CODEDEPLOY_APP: CoolAdminJava             # 确认你的 CodeDeploy 应用名
+  CODEDEPLOY_GROUP: Java-Group             # 确认你的部署组名
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted  # 使用你之前配置的 Runner
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. 编译 Java 项目 (生成 jar 包)
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      # 2. 登录 AWS ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 3. 构建、打标签并推送镜像到 ECR
+      - name: Build, Tag, and Push Image
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }} # 使用 commit ID 作为标签
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      # 4. 触发 AWS CodeDeploy 部署
+      - name: Trigger CodeDeploy
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODEDEPLOY_APP }} \
+            --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
+            --github-location repository=${{ github.repository }},commitId=${{ github.sha }} \
+            --description "IMAGE_TAG=${{ steps.build-image.outputs.image_tag }}"
