@@ -7,7 +7,7 @@ on:
 env:
   AWS_REGION: us-east-1                   # 确认你的区域
   ECR_REPOSITORY: cool-admin-java          # 确认你的 ECR 仓库名
-  CODEDEPLOY_APP: CoolAdminJava             # 确认你的 CodeDeploy 应用名
+  CODEDEPLOY_APP: CoolAdminApp             # 确认你的 CodeDeploy 应用名
   CODEDEPLOY_GROUP: Java-Group             # 确认你的部署组名
 
 jobs:
