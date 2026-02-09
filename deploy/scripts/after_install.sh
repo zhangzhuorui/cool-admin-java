@@ -7,7 +7,7 @@ IMAGE_TAG=$(echo $DESCRIPTION | cut -d'=' -f2)
 
 # 获取 AWS 账户信息和区域
 AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-REGION="us-east-1" # 如果你的区不是 us-east-1，请修改此处
+REGION="us-east-2" # 如果你的区不是 us-east-2，请修改此处
 ECR_URL="$AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
 # [注意] 这里的仓库名必须和你 ECR 创建的名字完全一致
 REPO_NAME="cool-admin-java" 
