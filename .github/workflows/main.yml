@@ -53,4 +53,4 @@ jobs:
             --application-name ${{ env.CODEDEPLOY_APP }} \
             --deployment-group-name ${{ env.CODEDEPLOY_GROUP }} \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }} \
-            --description "IMAGE_TAG=${{ steps.build-image.outputs.image_tag }}"
+            --description "IMAGE_TAG=${{ steps.build-image.outputs.image_tag }}" 
